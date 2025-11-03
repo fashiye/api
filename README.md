@@ -18,7 +18,7 @@ kook_chat_bridge/
 - `requests` - HTTP 请求库
 - `json` - JSON 数据处理
 - `typing` - 类型注解支持
-- `mcdreforged.api.all` - Minecraft 服务器插件框架
+
 
 ## 类文档
 
@@ -557,4 +557,4 @@ if message_info:
 
 ---
 
-*文档最后更新: 2025-11-01*
+*文档最后更新: 2025-11-03*
