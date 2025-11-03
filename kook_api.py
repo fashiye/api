@@ -146,22 +146,63 @@ class MessageSender:
         return self.send_text(formatted_message, channel_id)
 
 class KookAPI:
-    def __init__(self, plugin_instance, config):
+    def __init__(self, plugin_instance=None, config=None):
         self.plugin_instance = plugin_instance
-        self.config = config
+        self.config = config or {}
         
         # 初始化配置管理器
-        self.config_manager = ConfigManager(config)
+        self.config_manager = ConfigManager(self.config)
         
         self.base_url = "https://www.kookapp.cn/api/v3"
         self.headers = {
             "Authorization": f"Bot {self.config_manager.get_bot_token() or ''}",
             "Content-Type": "application/json"
         }
-        self.logger = plugin_instance.logger
+        
+        # 初始化灵活的日志系统
+        self.logger = self._setup_logger(plugin_instance)
         
         # 初始化消息发送器
         self.sender = MessageSender(self)
+    
+    def _setup_logger(self, plugin_instance):
+        """
+        设置灵活的日志系统
+        - 如果提供了 MCDR 插件实例，使用 MCDR 日志
+        - 否则使用标准 logging 模块
+        """
+        if plugin_instance and hasattr(plugin_instance, 'logger'):
+            # 使用 MCDR 日志系统
+            return plugin_instance.logger
+        else:
+            # 使用标准 logging 模块
+            import logging
+            
+            # 创建 KookAPI 专用的日志器
+            logger = logging.getLogger('KookAPI')
+            
+            # 如果还没有配置处理器，则添加默认配置
+            if not logger.handlers:
+                logger.setLevel(logging.INFO)
+                
+                # 创建控制台处理器
+                console_handler = logging.StreamHandler()
+                console_handler.setLevel(logging.INFO)
+                
+                # 创建格式化器
+                formatter = logging.Formatter(
+                    '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S'
+                )
+                console_handler.setFormatter(formatter)
+                
+                # 添加处理器
+                logger.addHandler(console_handler)
+                
+                # 防止日志传播到根日志器
+                logger.propagate = False
+            
+            return logger
 
     # 配置管理相关方法
     def get_bot_token(self) -> Optional[str]:
