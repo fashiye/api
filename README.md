@@ -538,7 +538,6 @@ if message_info:
 
 - 保持与旧版本 `send_message` 方法的兼容性
 - 支持 Python 3.7+
-- 依赖 MCDR 插件框架
 
 ## 注意事项
 
