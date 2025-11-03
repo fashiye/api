@@ -1,0 +1,7 @@
+/.venv
+/config.json
+/kook_websocket_bot.py
+/requirements.txt
+/SETUP_GUIDE.md
+/test_websocket_bot.py
+/__pycache__
